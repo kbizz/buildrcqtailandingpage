@@ -1,0 +1,43 @@
+---
+import "@styles/global.css";
+import GlobalHeader from "@components/GlobalHeader.astro";
+import SiteFooter from "@components/SiteFooter.astro";
+import { siteConfig } from "@data/rcqt";
+
+type Props = {
+  title?: string;
+  description?: string;
+  bodyClass?: string;
+  hideNav?: boolean;
+};
+
+const {
+  title = `${siteConfig.name} | Live tennis intelligence`,
+  description = siteConfig.tagline,
+  bodyClass = "",
+  hideNav = false
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#060706" />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <title>{title}</title>
+  </head>
+  <body class={bodyClass}>
+    {!hideNav && <GlobalHeader />}
+    <main>
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

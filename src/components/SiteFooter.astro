@@ -1,0 +1,20 @@
+---
+import { siteConfig } from "@data/rcqt";
+import { withBase } from "@lib/routes";
+---
+
+<footer class="site-footer">
+  <div>
+    <a class="brand-mark" href={withBase("/")}>
+      <span class="brand-mark__sigil">R</span>
+      <span>{siteConfig.name}</span>
+    </a>
+    <p>{siteConfig.tagline}</p>
+  </div>
+  <nav aria-label="Footer navigation">
+    <a href={withBase("/demo/vanderbilt/")}>Public Team Page</a>
+    <a href={withBase("/demo/coach/")}>Coach Dashboard</a>
+    <a href={siteConfig.social.linkedin}>LinkedIn</a>
+    <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
+  </nav>
+</footer>

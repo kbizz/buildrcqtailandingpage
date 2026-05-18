@@ -1,0 +1,84 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import DemoRibbon from "@components/DemoRibbon.astro";
+import VideoLibrary from "@components/VideoLibrary";
+import { players, videos, vanderbiltTeam } from "@data/rcqt";
+import { withBase } from "@lib/routes";
+
+export function getStaticPaths() {
+  return players.map((player) => ({
+    params: { slug: player.slug },
+    props: { player }
+  }));
+}
+
+const { player } = Astro.props;
+const playerVideos = videos.filter((video) => video.player === player.name || video.player === "Team");
+---
+
+<BaseLayout
+  title={`${player.name} | RCQT.AI Player Demo`}
+  description={`${player.name} player page with public match video, results, and AI coaching data.`}
+  bodyClass="site-shell team-theme player-page"
+>
+  <DemoRibbon />
+  <section class="player-hero">
+    <div class="player-portrait">
+      <img src={player.image} alt="" />
+      <div class="player-portrait__data">
+        <span>{player.singlesLine}</span>
+        <strong>{player.record}</strong>
+      </div>
+    </div>
+    <div class="player-hero__copy">
+      <p class="eyebrow">{player.classYear} · {player.hometown} · {player.hand}</p>
+      <h1>{player.name}</h1>
+      <p>{player.profile}</p>
+      <div class="hero__actions">
+        <a class="button button--primary" href={withBase("/demo/vanderbilt/matches/sec-night-session/")}>
+          Watch latest match
+        </a>
+        <a class="button button--ghost" href={withBase("/demo/vanderbilt/")}>
+          Back to team page
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="player-signal-band">
+    <div>
+      <p class="eyebrow">Player model</p>
+      <h2>{player.archetype}</h2>
+      <p>{player.trend}</p>
+    </div>
+    <div class="metric-grid">
+      {player.metrics.map((metric) => (
+        <article>
+          <span>{metric.label}</span>
+          <strong>{metric.value}</strong>
+          <p>{metric.note}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-stack">
+    <div class="section-heading">
+      <p class="eyebrow">Searchable video library</p>
+      <h2>The match archive becomes the training plan.</h2>
+      <p>
+        Players can click into public match pages, private clips, and AI reports that keep improving
+        as RCQT learns their game.
+      </p>
+    </div>
+    <VideoLibrary videos={playerVideos} client:load />
+  </section>
+
+  <section class="coach-note">
+    <span>{vanderbiltTeam.shortName} staff report</span>
+    <p>
+      Next plan: protect second-serve plus-one patterns, attack shorter crosscourt replies earlier,
+      and rehearse two return-depth targets before the regional final.
+    </p>
+  </section>
+</BaseLayout>

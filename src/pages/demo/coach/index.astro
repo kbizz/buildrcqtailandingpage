@@ -1,0 +1,90 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import LiveCourtWall from "@components/LiveCourtWall";
+import VideoLibrary from "@components/VideoLibrary";
+import InsightConsole from "@components/InsightConsole";
+import { courts, matches, players, videos } from "@data/rcqt";
+import { withBase } from "@lib/routes";
+---
+
+<BaseLayout
+  title="RCQT.AI Coach Dashboard Demo"
+  description="Private team dashboard concept for all-court monitoring, searchable video, scouting, reports, and AI coaching."
+  bodyClass="site-shell coach-shell"
+>
+  <section class="coach-hero">
+    <div>
+      <p class="eyebrow">Private client workspace</p>
+      <h1>The staff room for every court, every clip, every opponent pattern.</h1>
+      <p>
+        The coach view is where public broadcast polish turns into private competitive advantage:
+        all-court monitoring, library search, opponent prep, team reports, and an AI layer that can
+        explain what is happening before the bus leaves the facility.
+      </p>
+      <div class="hero__actions">
+        <a class="button button--primary" href={withBase("/demo/vanderbilt/")}>Public team page</a>
+        <a class="button button--ghost" href={withBase("/demo/vanderbilt/matches/sec-night-session/")}>
+          Match page
+        </a>
+      </div>
+    </div>
+    <aside class="ops-panel">
+      <span>Ops Pulse</span>
+      <strong>All courts online</strong>
+      <p>6 feeds · 4 AI clip queues · 2 opponent reports · 1 broadcast package</p>
+    </aside>
+  </section>
+
+  <section class="dashboard-grid">
+    <div class="dashboard-grid__main">
+      <div class="section-heading">
+        <p class="eyebrow">Court command</p>
+        <h2>Every live feed in one coaching surface.</h2>
+      </div>
+      <LiveCourtWall courts={courts} client:load />
+    </div>
+    <aside class="side-rail">
+      <h2>Today’s match stack</h2>
+      {matches.map((match) => (
+        <a href={withBase(`/demo/vanderbilt/matches/${match.id}/`)}>
+          <span>{match.status}</span>
+          <strong>{match.streamTitle}</strong>
+          <p>{match.stakes}</p>
+        </a>
+      ))}
+    </aside>
+  </section>
+
+  <section class="split-section split-section--coach">
+    <div>
+      <p class="eyebrow">Opponent and player intelligence</p>
+      <h2>A coach should not have to manually stitch the match together.</h2>
+      <p>
+        RCQT keeps live signals connected to the archive. The result is a staff workflow where
+        searching "wide serve under pressure" can open the right clip, the right stat, and the right
+        player conversation.
+      </p>
+      <div class="player-mini-list">
+        {players.map((player) => (
+          <a href={withBase(`/demo/vanderbilt/players/${player.slug}/`)}>
+            <strong>{player.name}</strong>
+            <span>{player.heroStat}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+    <InsightConsole client:load />
+  </section>
+
+  <section class="section-stack">
+    <div class="section-heading">
+      <p class="eyebrow">Searchable archive</p>
+      <h2>Every recorded match becomes usable film.</h2>
+      <p>
+        This is the locked library concept: video can be searched by player, match, tag, opponent,
+        tactical theme, and AI-generated insight.
+      </p>
+    </div>
+    <VideoLibrary videos={videos} client:load />
+  </section>
+</BaseLayout>

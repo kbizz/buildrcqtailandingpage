@@ -1,0 +1,115 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import DemoRibbon from "@components/DemoRibbon.astro";
+import LiveCourtWall from "@components/LiveCourtWall";
+import NewsletterForm from "@components/NewsletterForm.astro";
+import { courts, matches, players, vanderbiltTeam, visualAssets } from "@data/rcqt";
+import { withBase } from "@lib/routes";
+---
+
+<BaseLayout
+  title="Vanderbilt Women's Tennis Demo | RCQT.AI"
+  description="A Vanderbilt-inspired public team streaming page demo for RCQT.AI."
+  bodyClass="site-shell team-theme"
+>
+  <DemoRibbon />
+  <section class="team-hero" style={`--hero-image: url('${visualAssets.nightCourt}')`}>
+    <div class="team-hero__visual" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <strong>LIVE SIGNAL</strong>
+    </div>
+    <div class="team-hero__copy">
+      <p class="eyebrow">{vanderbiltTeam.city}, {vanderbiltTeam.state} · {vanderbiltTeam.conference}</p>
+      <h1>{vanderbiltTeam.name}</h1>
+      <p>
+        A public match center for fans, families, recruits, alumni, and local tennis people who want
+        to understand the whole story without hunting across six separate feeds.
+      </p>
+      <div class="hero__actions">
+        <a class="button button--primary" href={withBase(`/demo/vanderbilt/matches/${matches[0].id}/`)}>
+          Watch featured match
+        </a>
+        <a class="button button--ghost" href={vanderbiltTeam.shopUrl}>Shop team gear</a>
+      </div>
+    </div>
+    <aside class="team-scoreboard" aria-label="Team match score">
+      <span>Team Score</span>
+      <div>
+        <strong>{vanderbiltTeam.shortName}</strong>
+        <b>2</b>
+      </div>
+      <div>
+        <strong>Georgia</strong>
+        <b>1</b>
+      </div>
+      <p>{matches[0].status} · {matches[0].competition}</p>
+    </aside>
+  </section>
+
+  <section class="team-meta-strip">
+    <span>{vanderbiltTeam.venue}</span>
+    <span>{vanderbiltTeam.ranking}</span>
+    <a href={vanderbiltTeam.social.website}>Official team site</a>
+    <a href={vanderbiltTeam.social.instagram}>Instagram</a>
+    <a href={vanderbiltTeam.social.x}>X / Twitter</a>
+  </section>
+
+  <section class="section-stack">
+    <div class="section-heading">
+      <p class="eyebrow">Live court wall</p>
+      <h2>Every court is one touch away.</h2>
+      <p>
+        Public streams can stay live before and after the match, while staff views keep private
+        feeds and tactical review inside the team experience.
+      </p>
+    </div>
+    <LiveCourtWall courts={courts} client:load />
+  </section>
+
+  <section class="match-preview-band">
+    <div class="section-heading">
+      <p class="eyebrow">Match pages</p>
+      <h2>Streams with context below the player.</h2>
+    </div>
+    <div class="preview-grid">
+      {matches.map((match) => (
+        <a class="preview-card" href={withBase(`/demo/vanderbilt/matches/${match.id}/`)}>
+          <span>{match.status}</span>
+          <h3>{match.title}</h3>
+          <p>{match.stakes}</p>
+          <strong>{match.startTime} · {match.court}</strong>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="players-band">
+    <div class="section-heading">
+      <p class="eyebrow">Player pages</p>
+      <h2>Profiles that connect public storytelling to private improvement.</h2>
+    </div>
+    <div class="player-grid">
+      {players.map((player) => (
+        <a class="player-card" href={withBase(`/demo/vanderbilt/players/${player.slug}/`)}>
+          <img src={player.image} alt="" loading="lazy" />
+          <div>
+            <span>{player.singlesLine}</span>
+            <h3>{player.name}</h3>
+            <p>{player.heroStat}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="newsletter-slab">
+    <div>
+      <p class="eyebrow">Newsletter capture</p>
+      <h2>{vanderbiltTeam.newsletterLabel}</h2>
+      <p>Collect fans before the stream, then send the story after the clinch.</p>
+    </div>
+    <NewsletterForm label="Get match alerts, clips, and player stories" compact />
+  </section>
+</BaseLayout>

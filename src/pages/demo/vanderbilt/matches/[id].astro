@@ -1,0 +1,103 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import DemoRibbon from "@components/DemoRibbon.astro";
+import MatchSignalDeck from "@components/MatchSignalDeck";
+import NewsletterForm from "@components/NewsletterForm.astro";
+import { matches, players, vanderbiltTeam, visualAssets } from "@data/rcqt";
+import { withBase } from "@lib/routes";
+
+export function getStaticPaths() {
+  return matches.map((match) => ({
+    params: { id: match.id },
+    props: { match }
+  }));
+}
+
+const { match } = Astro.props;
+const featuredPlayer = players.find((player) => player.name === match.playerA) ?? players[0];
+---
+
+<BaseLayout
+  title={`${match.title} | RCQT.AI Match Demo`}
+  description={`${match.streamTitle} live match page with scoreboard, stats, and AI broadcast context.`}
+  bodyClass="site-shell team-theme match-page"
+>
+  <DemoRibbon />
+  <section class="match-hero">
+    <div class="stream-stage">
+      <div class="stream-player" style={`--hero-image: url('${visualAssets.player}')`}>
+        <div class="stream-player__chrome">
+          <span>{match.status}</span>
+          <strong>{match.streamTitle}</strong>
+          <span>{match.court}</span>
+        </div>
+        <div class="stream-player__overlay">
+          <p class="eyebrow">{match.competition}</p>
+          <h1>{match.title}</h1>
+          <p>{match.stakes}</p>
+        </div>
+      </div>
+    </div>
+    <aside class="match-score-panel">
+      <p class="eyebrow">Team scoring</p>
+      <h2>{match.startTime}</h2>
+      <div class="set-table">
+        <div class="set-table__head">
+          <span>Team</span>
+          <span>1</span>
+          <span>2</span>
+          <span>Pts</span>
+        </div>
+        {match.score.map((row) => (
+          <div class="set-table__row">
+            <strong>{row.team}</strong>
+            {row.sets.slice(0, 2).map((set) => <span>{set}</span>)}
+            <b>{row.points}</b>
+          </div>
+        ))}
+      </div>
+      <a class="button button--ghost" href={withBase(`/demo/vanderbilt/players/${featuredPlayer.slug}/`)}>
+        Open {featuredPlayer.name}
+      </a>
+    </aside>
+  </section>
+
+  <section class="story-beats">
+    <div class="section-heading">
+      <p class="eyebrow">Live story engine</p>
+      <h2>Context that gives the audience a reason to stay.</h2>
+    </div>
+    <div class="beat-grid">
+      {match.storyBeats.map((beat, index) => (
+        <article>
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <p>{beat}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="stat-river" aria-label="Match statistics">
+    {match.stats.map((stat) => (
+      <div>
+        <span>{stat.label}</span>
+        <strong>{stat.value}</strong>
+        <em>{stat.delta}</em>
+      </div>
+    ))}
+  </section>
+
+  <section class="split-section split-section--match">
+    <div>
+      <p class="eyebrow">The graphics layer</p>
+      <h2>Head-to-head, serving, commentary, and reports live with the video.</h2>
+      <p>
+        This page is the concept in miniature: one public player, a scoreboard, the match story,
+        statistical graphics, and structured coaching takeaways that can become a report after the
+        final point.
+      </p>
+      <NewsletterForm label={`Follow ${vanderbiltTeam.shortName} match alerts`} compact />
+    </div>
+    <MatchSignalDeck match={match} client:load />
+  </section>
+</BaseLayout>

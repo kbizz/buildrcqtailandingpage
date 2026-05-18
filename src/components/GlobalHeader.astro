@@ -1,0 +1,16 @@
+---
+import { siteConfig } from "@data/rcqt";
+import { withBase } from "@lib/routes";
+---
+
+<header class="global-header">
+  <a class="brand-mark" href={withBase("/")}>
+    <span class="brand-mark__sigil">R</span>
+    <span>{siteConfig.name}</span>
+  </a>
+  <nav class="global-nav" aria-label="Primary navigation">
+    <a href={withBase("/demo/vanderbilt/")}>Team Demo</a>
+    <a href={withBase("/demo/coach/")}>Coach View</a>
+    <a href={siteConfig.demoUrl}>Schedule Demo</a>
+  </nav>
+</header>

@@ -1,0 +1,18 @@
+---
+import { siteConfig } from "@data/rcqt";
+
+type Props = {
+  label?: string;
+  compact?: boolean;
+};
+
+const { label = "Get the RCQT.AI match intelligence brief", compact = false } = Astro.props;
+---
+
+<form class:list={["newsletter-form", compact && "newsletter-form--compact"]} action={siteConfig.newsletterEndpoint} method="post">
+  <label>
+    <span>{label}</span>
+    <input type="email" name="email" placeholder="you@program.edu" required />
+  </label>
+  <button type="submit">Join list</button>
+</form>
